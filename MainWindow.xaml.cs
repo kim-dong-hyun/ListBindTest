@@ -49,10 +49,12 @@ namespace ListBindTest
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            personTest.Name = personTest.Name + "X";
+            //personTest.Name = personTest.Name + "X";
+            Person p = viewModel.SelectedItem;
+            p.Age++;
         }
     }
-#if true
+#if false
     public class Person
     {
         private string _name;
