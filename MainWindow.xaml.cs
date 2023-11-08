@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,46 +43,37 @@ namespace ListBindTest
             Person p = new Person();
             p.Name = personTest.Name;
             p.Age = personTest.Age;
-            
-            //viewModel.People.Add(p);
-            viewModel.People.Add(personTest);            
+
+            Thread thread = new Thread(new ThreadStart(() =>
+            {
+#if false
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    viewModel.People.Add(p);
+                    //viewModel.People.Add(personTest);
+                }));
+#else
+                viewModel.People.Add(p);
+#endif
+            }));
+            thread.IsBackground = true;
+            thread.Start();            
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            //personTest.Name = personTest.Name + "X";
-            Person p = viewModel.SelectedItem;
-            p.Age++;
+            Thread thread = new Thread(new ThreadStart(() =>
+            {
+                //personTest.Name = personTest.Name + "X";
+                Person p = viewModel.SelectedItem;
+                if (p != null) p.Age++;
+            }));
+            thread.IsBackground = true;
+            thread.Start();
         }
     }
-#if false
-    public class Person
-    {
-        private string _name;
-        private int _age;
 
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                Console.WriteLine($"Name : {_name}");
-            }
-        }
-
-        public int Age
-        {
-            get { return _age; }
-            set
-            {
-                _age = value;
-                Console.WriteLine($"Age : {_age}");
-            }
-        }
-    }
-#else
-    public class Person : INotifyPropertyChanged
+  public class Person : INotifyPropertyChanged
     {
         private string _name;
         private int _age;
@@ -113,11 +105,13 @@ namespace ListBindTest
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-#endif
+
     public class MainViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<Person> _people;
         private Person _selectedItem;
+
+        private object objLock = new object();
 
         public MainViewModel()
         {
@@ -125,6 +119,8 @@ namespace ListBindTest
             _people.Add(new Person { Name = "Alice", Age = 25 });
             _people.Add(new Person { Name = "Bob", Age = 30 });
             _people.Add(new Person { Name = "Charlie", Age = 35 });
+
+            BindingOperations.EnableCollectionSynchronization(_people, objLock);
         }
 
         public ObservableCollection<Person> People
@@ -133,7 +129,7 @@ namespace ListBindTest
             set
             {
                 _people = value;
-                //OnPropertyChanged(nameof(People));
+                OnPropertyChanged(nameof(People));
             }
         }
 

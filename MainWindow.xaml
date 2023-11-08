@@ -23,8 +23,8 @@
                 <TextBox x:Name="textName_Copy" Canvas.Left="101" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="183" Width="120" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <TextBox x:Name="textAge_Copy" Canvas.Left="101" Text="{Binding Age, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="235" Width="120" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             </Canvas>
-            <Button x:Name="button" Content="Button" Canvas.Left="22" Canvas.Top="297" Click="button_Click"/>
-            <Button x:Name="button1" Content="Button" Canvas.Left="78" Canvas.Top="297" Click="button1_Click"/>
+            <Button x:Name="button" Content="button" Canvas.Left="22" Canvas.Top="297" Click="button_Click"/>
+            <Button x:Name="button1" Content="button1" Canvas.Left="78" Canvas.Top="297" Click="button1_Click"/>
         </Canvas>
     </Grid>
 </Window>
